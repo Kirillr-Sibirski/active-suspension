@@ -17,9 +17,6 @@
   Required Libraries
    * Jeff Rowberg's MPU6050 library: https://github.com/jrowberg/i2cdevlib/tree/master/Arduino/MPU6050
    * Jeff Rowberg's I2Cdev library: https://github.com/jrowberg/i2cdevlib/tree/master/Arduino/I2Cdev
-   * Adafruit SSD1306 OLED library: https://github.com/adafruit/Adafruit_SSD1306
-   * Adafruit GFX library: https://github.com/adafruit/Adafruit-GFX-Library
-   * Adafruit font from GFX library: https://github.com/adafruit/Adafruit-GFX-Library/blob/master/Fonts/FreeMono9pt7b.h
    
  */
 
@@ -132,8 +129,10 @@ void setup() {
 
   // Get stored EEPROM Calibration values and send to MPU
   // Otherwise default to predefined and display Calibration needed!
+  
+  setCalibration(); // This runs the actual calibration
+  delay(200);
   getCalibration();
-  // Might need to setCalibration(); // This runs the actual calibration
 
   // make sure it worked - Because we are pushing firmware on startup of DMP
   // we need to check that everything actually went as planned devStatus 0 is success.
@@ -164,14 +163,14 @@ void loop() {
     VectorFloat ea = QtoEulerAngle(q);
 
     //DEBUG ONLY COMMENT OUT UNLESS NEEDED
-    /*  Serial.print("quat\t");
-      Serial.print(ea.x);
-      Serial.print("\t");
-      Serial.print(ea.y);
-      Serial.print("\t");
-      Serial.print(ea.z);
-      Serial.println("\t"); 
-    */
+//      Serial.print("quat\t");
+//      Serial.print(ea.x);
+//      Serial.print("\t");
+//      Serial.print(ea.y);
+//      Serial.print("\t");
+//      Serial.print(ea.z);
+//      Serial.println("\t"); 
+    
     
     float angVal = 0;
 
@@ -213,6 +212,8 @@ void loop() {
     }
 
     //angVal is what we need
-    Serial.print("Angle value: ",angVal);
+    Serial.println("Angle value: ");
+    Serial.println(angVal);
+    delay(1000);
   }
 }
