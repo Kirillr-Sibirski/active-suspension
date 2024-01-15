@@ -112,6 +112,7 @@ void loop() {
   // Serial.print(RAD_TO_DEG*g.gyro.z);
   Serial.println(" degrees/s");
 
+  // Need to test to actually see what are x and y axis
   while(x_axis < 0 & y_axis > 0) { // Front right is low
     if(front_right.read()+1 <= 180) { // If it is within the limit of servo
       front_right.write(front_right.read()+1); // We increase the angle of the servo   
