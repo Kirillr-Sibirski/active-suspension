@@ -102,12 +102,16 @@ void setup() {
   Fastwire::setup(400, true);
 #endif
 
+  Serial.begin(115200);
   // Init MPU6050
   mpu.initialize();
   devStatus = mpu.dmpInitialize();
+  Serial.print("Init MPU");
 
   // Get stored EEPROM Calibration values and send to MPU
   // Otherwise default to predefined and display Calibration needed!
+  setCalibration();
+  delay(100);
   getCalibration();
 
   // make sure it worked - Because we are pushing firmware on startup of DMP
@@ -128,10 +132,6 @@ void setup() {
 
 // MAIN PROGRAM LOOP!!
 void loop() {
-  if (digitalRead(MENU_BTN) == LOW) {
-    delay(500);
-    menuMainWait();
-  }
   // if programming failed, don't try to do anything
   if (!dmpReady) return;
   // Get the Quaternion values from DMP buffer
@@ -143,14 +143,15 @@ void loop() {
     VectorFloat ea = QtoEulerAngle(q);
 
     //DEBUG ONLY COMMENT OUT UNLESS NEEDED
-    /*  Serial.print("quat\t");
+    delay(1000);
+      Serial.print("quat\t");
       Serial.print(ea.x);
       Serial.print("\t");
       Serial.print(ea.y);
       Serial.print("\t");
       Serial.print(ea.z);
       Serial.println("\t"); 
-    */
+    
     
     float angVal = 0;
     float dispRotate = 0;
@@ -200,7 +201,7 @@ void loop() {
     }
 
     // Display the data on OLED formatted as we need for the position
-    Serial.print("Angle value: ");
-    Serial.print(angVal);
+//    Serial.println("Angle value:");
+//    Serial.println(ea.y);
   }
 }
