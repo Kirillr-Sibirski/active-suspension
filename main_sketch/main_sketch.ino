@@ -1,10 +1,8 @@
 #include "I2Cdev.h"
 #include "Wire.h"
 #include "MPU6050_6Axis_MotionApps20.h"   //Must include for DMP holds firmware hex to push to MPU on init
-#include <Adafruit_SSD1306.h>
-#include <Adafruit_GFX.h>
 #include <EEPROM.h>
-#include <Fonts/FreeMono9pt7b.h> //Font for menus only
+#include <Servo.h>
 
 // MPU Address for I2C
 byte devAddr = 0x68;
@@ -19,6 +17,15 @@ int fifoCount;     		// count of all bytes currently in FIFO
 byte fifoBuffer[64]; 	// FIFO storage buffer
 Quaternion q;           // [w, x, y, z] quaternion container
 
+Servo front_right;
+Servo front_left;
+Servo rear_right;
+Servo rear_left;
+
+int front_right_pos = 90;
+int front_left_pos = 90;
+int rear_right_pos = 90;
+int rear_left_pos = 90;
 
 // Modified version of Adafruit BN0555 library to convert Quaternion to world angles the way we need
 // The math is a little different here compared to Adafruit's version to work the way I needed for this project
@@ -110,6 +117,19 @@ void setup() {
 
   // Get stored EEPROM Calibration values and send to MPU
   // Otherwise default to predefined and display Calibration needed!
+
+  front_right.attach(3); 
+  front_left.attach(2); 
+  rear_right.attach(4);
+  rear_left.attach(5);
+
+  front_right.write(front_right_pos);
+  front_left.write(front_left_pos);
+  rear_right.write(rear_right_pos);
+  rear_left.write(rear_left_pos);
+
+  delay(500); // make sure that servos are centered
+
   setCalibration();
   delay(100);
   getCalibration();
@@ -143,7 +163,6 @@ void loop() {
     VectorFloat ea = QtoEulerAngle(q);
 
     //DEBUG ONLY COMMENT OUT UNLESS NEEDED
-    delay(1000);
       Serial.print("quat\t");
       Serial.print(ea.x);
       Serial.print("\t");
@@ -154,7 +173,6 @@ void loop() {
     
     
     float angVal = 0;
-    float dispRotate = 0;
 
     // Figure out how to display the data on OLED at the right rotation
     // Like flipping a phone around rotating the display - trial and error...took a while
@@ -163,32 +181,26 @@ void loop() {
     // TOP IS TOP angling Right side (LEVEL)
     if (ea.x > 0 && ea.y > 35 && ea.y <= 90) {
       angVal = (90 - ea.y);
-      dispRotate = 0;
     }
     // Angling right side up RIGHT is TOP (toward PLUMB)
     if (ea.x > 0 && ea.y <= 35 && ea.y > -35) {
       angVal = ea.y;
-      dispRotate = 1;
     }
     // LEFT IS TOP (PLUMB)
     if (ea.x > 0 && ea.y <= -35 && ea.y > -90) {
       angVal = ea.y + 90;
-      dispRotate = 2;
     }
     // TOP IS TOP angling Left side (LEVEL)
     if (ea.x < 0 && ea.y > 35 && ea.y <= 90) {
       angVal = (90 - ea.y);
-      dispRotate = 0;
     }
     // Upside down - BOTTOM IS TOP (LEVEL)
     if (ea.x < 0 && ea.y <= 35 && ea.y > -35) {
       angVal = ea.y;
-      dispRotate = 3;
     }
     // Upside down - BOTTOM IS TOP
     if (ea.x < 0 && ea.y <= -35 && ea.y > -90) {
       angVal = ea.y + 90;
-      dispRotate = 2;
     }
     // laying down face up - this is also Calibration position
     // need to also check Z here or it can get confused with another position
@@ -197,11 +209,44 @@ void loop() {
       if (angVal > 50) {
         angVal -= 90; // bandaid fix from being laid flat...
       }
-      dispRotate = 0;
     }
 
     // Display the data on OLED formatted as we need for the position
 //    Serial.println("Angle value:");
 //    Serial.println(ea.y);
+
+    if(ea.z < -0.5){ // car is leaning forward
+      if(front_right_pos <= 140) {
+        front_right_pos = front_right_pos+1;
+        front_right.write(front_right_pos);
+      } else if(rear_right_pos >= 40){
+        rear_right_pos = rear_right_pos-1;
+        rear_right.write(rear_right_pos);
+      }
+      if(front_left_pos >= 40) {
+        front_left_pos=front_left_pos-1;
+        front_left.write(front_left_pos);
+      } else if(rear_left_pos <= 140) {
+        rear_left_pos=rear_left_pos+1;
+        rear_left.write(rear_left_pos);
+      }
+    }
+
+    if(ea.z > 0.5){ // car is leaning backward
+      if(front_right_pos >= 40) {
+        front_right_pos = front_right_pos-1;
+        front_right.write(front_right_pos);
+      } else if(rear_right_pos <= 140) {
+        rear_right_pos = rear_right_pos+1;
+        rear_right.write(rear_right_pos);
+      }
+      if(front_left_pos <= 140) {
+        front_left_pos=front_left_pos+1;
+        front_left.write(front_left_pos);
+      } else if(rear_left_pos >= 40) {
+        rear_left_pos=rear_left_pos-1;
+        rear_left.write(rear_left_pos);
+      }
+    }
   }
 }
