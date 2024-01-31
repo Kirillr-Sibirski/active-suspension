@@ -170,38 +170,38 @@ void loop() {
     // Serial.print("\t");
     // Serial.print(ea.z);
     // Serial.println("\t"); 
-//
-//    if(ea.z < -0.5){ // car is leaning forward
-//      if(front_right_pos <= 140) {
-//        front_right_pos = front_right_pos+1;
-//        front_right.write(front_right_pos);
-//      } else if(rear_right_pos >= 40){
-//        rear_right_pos = rear_right_pos-1;
-//        rear_right.write(rear_right_pos);
-//      }
-//      if(front_left_pos >= 40) {
-//        front_left_pos=front_left_pos-1;
-//        front_left.write(front_left_pos);
-//      } else if(rear_left_pos <= 140) {
-//        rear_left_pos=rear_left_pos+1;
-//        rear_left.write(rear_left_pos);
-//      }
-//    } else if(ea.z > 0.5){ // car is leaning backward
-//      if(front_right_pos >= 40) {
-//        front_right_pos = front_right_pos-1;
-//        front_right.write(front_right_pos);
-//      } else if(rear_right_pos <= 140) {
-//        rear_right_pos = rear_right_pos+1;
-//        rear_right.write(rear_right_pos);
-//      }
-//      if(front_left_pos <= 140) {
-//        front_left_pos=front_left_pos+1;
-//        front_left.write(front_left_pos);
-//      } else if(rear_left_pos >= 40) {
-//        rear_left_pos=rear_left_pos-1;
-//        rear_left.write(rear_left_pos);
-//      }
-//    }
+
+    if(ea.z < -0.5){ // car is leaning forward
+      if(front_right_pos <= 140) {
+        front_right_pos = front_right_pos+1;
+        front_right.write(front_right_pos);
+      } else if(rear_right_pos >= 40){
+        rear_right_pos = rear_right_pos-1;
+        rear_right.write(rear_right_pos);
+      }
+      if(front_left_pos >= 40) {
+        front_left_pos=front_left_pos-1;
+        front_left.write(front_left_pos);
+      } else if(rear_left_pos <= 140) {
+        rear_left_pos=rear_left_pos+1;
+        rear_left.write(rear_left_pos);
+      }
+    } else if(ea.z > 0.5){ // car is leaning backward
+      if(front_right_pos >= 40) {
+        front_right_pos = front_right_pos-1;
+        front_right.write(front_right_pos);
+      } else if(rear_right_pos <= 140) {
+        rear_right_pos = rear_right_pos+1;
+        rear_right.write(rear_right_pos);
+      }
+      if(front_left_pos <= 140) {
+        front_left_pos=front_left_pos+1;
+        front_left.write(front_left_pos);
+      } else if(rear_left_pos >= 40) {
+        rear_left_pos=rear_left_pos-1;
+        rear_left.write(rear_left_pos);
+      }
+    }
 
     if(ea.y < -1){ // car is leaning right
       if(front_right_pos <= 140) { // We raise the suspension as much as possible
