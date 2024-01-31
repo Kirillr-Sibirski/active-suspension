@@ -163,57 +163,13 @@ void loop() {
     VectorFloat ea = QtoEulerAngle(q);
 
     //DEBUG ONLY COMMENT OUT UNLESS NEEDED
-      Serial.print("quat\t");
-      Serial.print(ea.x);
-      Serial.print("\t");
-      Serial.print(ea.y);
-      Serial.print("\t");
-      Serial.print(ea.z);
-      Serial.println("\t"); 
-    
-    
-    float angVal = 0;
-
-    // Figure out how to display the data on OLED at the right rotation
-    // Like flipping a phone around rotating the display - trial and error...took a while
-    // TOP IS TOP means TOP of OLED is the TOP of the screen, RIGHT IS TOP Right side of OLED is now the top, etc.
-
-    // TOP IS TOP angling Right side (LEVEL)
-    if (ea.x > 0 && ea.y > 35 && ea.y <= 90) {
-      angVal = (90 - ea.y);
-    }
-    // Angling right side up RIGHT is TOP (toward PLUMB)
-    if (ea.x > 0 && ea.y <= 35 && ea.y > -35) {
-      angVal = ea.y;
-    }
-    // LEFT IS TOP (PLUMB)
-    if (ea.x > 0 && ea.y <= -35 && ea.y > -90) {
-      angVal = ea.y + 90;
-    }
-    // TOP IS TOP angling Left side (LEVEL)
-    if (ea.x < 0 && ea.y > 35 && ea.y <= 90) {
-      angVal = (90 - ea.y);
-    }
-    // Upside down - BOTTOM IS TOP (LEVEL)
-    if (ea.x < 0 && ea.y <= 35 && ea.y > -35) {
-      angVal = ea.y;
-    }
-    // Upside down - BOTTOM IS TOP
-    if (ea.x < 0 && ea.y <= -35 && ea.y > -90) {
-      angVal = ea.y + 90;
-    }
-    // laying down face up - this is also Calibration position
-    // need to also check Z here or it can get confused with another position
-    if (ea.x < 5 && ea.x > -20 && ea.y <= 35 && ea.y > -35 && ea.z < 5) {
-      angVal = 90 - ea.y;
-      if (angVal > 50) {
-        angVal -= 90; // bandaid fix from being laid flat...
-      }
-    }
-
-    // Display the data on OLED formatted as we need for the position
-//    Serial.println("Angle value:");
-//    Serial.println(ea.y);
+    // Serial.print("quat\t");
+    // Serial.print(ea.x);
+    // Serial.print("\t");
+    // Serial.print(ea.y);
+    // Serial.print("\t");
+    // Serial.print(ea.z);
+    // Serial.println("\t"); 
 
     if(ea.z < -0.5){ // car is leaning forward
       if(front_right_pos <= 140) {
@@ -230,9 +186,7 @@ void loop() {
         rear_left_pos=rear_left_pos+1;
         rear_left.write(rear_left_pos);
       }
-    }
-
-    if(ea.z > 0.5){ // car is leaning backward
+    } else if(ea.z > 0.5){ // car is leaning backward
       if(front_right_pos >= 40) {
         front_right_pos = front_right_pos-1;
         front_right.write(front_right_pos);
@@ -248,5 +202,38 @@ void loop() {
         rear_left.write(rear_left_pos);
       }
     }
+
+    if(ea.y < -0.5){ // car is leaning right
+      if(front_right_pos <= 140) { // We raise the suspension as much as possible
+        front_right_pos = front_right_pos+1;
+        front_right.write(front_right_pos);
+      } else if(front_left_pos >= 40){ // If it is still not horizontal -> we lower the other shock
+        front_left_pos = front_left_pos-1;
+        front_left.write(front_left_pos);
+      }
+      if(rear_right_pos <= 140) { // We raise the suspension (equally), although, this may poise a problem e.g. it may just get into a loop of vibration when ea.y asks the servo to be raised and the ea.z to lower it. Potential solution could be that we track both y and z coordinates and adjust individual shocks. 
+        rear_right_pos=rear_right_pos+1;
+        rear_right.write(rear_right_pos);
+      } else if(rear_left_pos >= 40) {
+        rear_left_pos=rear_left_pos-1;
+        rear_left.write(rear_left_pos);
+      }
+    } else if(ea.y > 0.5){ // car is leaning left
+      if(front_right_pos >= 40) {
+        front_right_pos = front_right_pos-1;
+        front_right.write(front_right_pos);
+      } else if(front_left_pos <= 140){
+        front_left_pos = front_left_pos+1;
+        front_left.write(front_left_pos);
+      }
+      if(rear_right_pos >= 40) {
+        rear_right_pos=rear_right_pos-1;
+        rear_right.write(rear_right_pos);
+      } else if(rear_left_pos <= 140) {
+        rear_left_pos=rear_left_pos+1;
+        rear_left.write(rear_left_pos);
+      }
+    } 
+
   }
 }
