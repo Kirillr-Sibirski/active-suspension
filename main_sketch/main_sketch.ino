@@ -128,7 +128,7 @@ void setup() {
   rear_right.write(rear_right_pos);
   rear_left.write(rear_left_pos);
 
-  delay(500); // make sure that servos are centered
+  delay(1000); // make sure that servos are centered
 
   setCalibration();
   delay(100);
@@ -148,6 +148,9 @@ void setup() {
   } else {
     Serial.print("IMU fail");
   }
+
+  pinMode(10, INPUT); // Set our input pins as such
+  pinMode(11, INPUT); // Set our input pins as such
 }
 
 // MAIN PROGRAM LOOP!!
@@ -170,6 +173,23 @@ void loop() {
     // Serial.print("\t");
     // Serial.print(ea.z);
     // Serial.println("\t"); 
+    ch3 = pulseIn(11, HIGH, 25000);
+    ch4 = pulseIn(10, HIGH, 25000);
+    if(ch4 == 25000) {
+      front_right_pos = 90;
+      front_left_pos = 90;
+      rear_right_pos = 90;
+      rear_left_pos = 90;
+      front_right.write(front_right_pos);
+      front_left.write(front_left_pos);
+      rear_right.write(rear_right_pos);
+      rear_left.write(rear_left_pos);
+      delay(1000);
+      setCalibration();
+      delay(100);
+      getCalibration();
+    }
+
 
     if(ea.z < -0.5){ // car is leaning forward
       if(front_right_pos <= 140) {
