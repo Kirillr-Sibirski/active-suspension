@@ -30,17 +30,17 @@ int rear_left_pos;
 int ch3;
 int ch4;
 
-float roll_angle;  // Tilt angle around the X-axis
+float roll_angle;  // Tilt angle around the Z-axis
 float pitch_angle; // Tilt angle around the Y-axis
 
 // PID Constants
-float KP_roll = 5.0;
+float KP_roll = 4.0;
 float KI_roll = 0.02;
 float KD_roll = 0.1;
-float KP_pitch = 5.0;
+float KP_pitch = 4.0;
 float KI_pitch = 0.02;
 float KD_pitch = 0.1;
-float DT = 0.02;
+float DT = 0.5 ;
 
 float prev_error_roll = 0;
 float integral_roll = 0;
@@ -215,10 +215,16 @@ void loop() {
   }
 }
 void adjustServoPositions(float control_output_roll, float control_output_pitch) {
+  float deadband_size = 10.0;
+
+  if(abs(control_output_roll) < deadband_size && abs(control_output_pitch) < deadband_size) {
+    return;
+  }
+  
   // Modify servo positions based on the control outputs for roll and pitch
   // Adjust the following conditions based on your servo orientation and desired behavior
-  front_right_pos = 90 - control_output_roll - control_output_pitch;
-  front_left_pos = 90 + control_output_roll - control_output_pitch;
+  front_right_pos = 90 + control_output_roll + control_output_pitch;
+  front_left_pos = 90 - control_output_roll + control_output_pitch;
   rear_right_pos = 90 - control_output_roll + control_output_pitch;
   rear_left_pos = 90 + control_output_roll + control_output_pitch;
 
