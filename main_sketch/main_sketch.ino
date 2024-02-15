@@ -30,6 +30,23 @@ int rear_left_pos;
 int ch3;
 int ch4;
 
+float roll_angle;  // Tilt angle around the X-axis
+float pitch_angle; // Tilt angle around the Y-axis
+
+// PID Constants
+float KP_roll = 5.0;
+float KI_roll = 0.02;
+float KD_roll = 0.1;
+float KP_pitch = 5.0;
+float KI_pitch = 0.02;
+float KD_pitch = 0.1;
+float DT = 0.02;
+
+float prev_error_roll = 0;
+float integral_roll = 0;
+float prev_error_pitch = 0;
+float integral_pitch = 0;
+
 // Modified version of Adafruit BN0555 library to convert Quaternion to world angles the way we need
 // The math is a little different here compared to Adafruit's version to work the way I needed for this project
 VectorFloat QtoEulerAngle(Quaternion qt) {
@@ -162,145 +179,58 @@ void setup() {
   pinMode(11, INPUT); // Set our input pins as such
 }
 
-// MAIN PROGRAM LOOP!!
 void loop() {
-  // if programming failed, don't try to do anything
   if (!dmpReady) return;
-  // Get the Quaternion values from DMP buffer
+
   if (mpu.dmpGetCurrentFIFOPacket(fifoBuffer)) {
     mpu.dmpGetQuaternion(&q, fifoBuffer);
 
-    // Calc angles converting Quaternion to Euler this was giving more stable acurate results compared to
-    // getting Euler directly from DMP. I think Quaternion conversion takes care of gimble lock.
-    VectorFloat ea = QtoEulerAngle(q);
+    // Convert Quaternion to Euler angles
+    VectorFloat euler_angles = QtoEulerAngle(q);
+    roll_angle = euler_angles.z;
+    pitch_angle = euler_angles.y;
 
-    //DEBUG ONLY COMMENT OUT UNLESS NEEDED
-    // Serial.print("quat\t");
-    // Serial.print(ea.x);
-    // Serial.print("\t");
-    // Serial.print(ea.y);
-    // Serial.print("\t");
-    // Serial.print(ea.z);
-    // Serial.println("\t"); 
-//    ch3 = pulseIn(11, HIGH, 25000);
-//    ch4 = pulseIn(10, HIGH, 25000);
-//    Serial.println("Ch3: ");
-//    Serial.println(ch3);
-//    Serial.println(ch4);
-//    if(ch4 >= 2000) {
-//      front_right_pos = 90;
-//      front_left_pos = 90;
-//      rear_right_pos = 90;
-//      rear_left_pos = 90;
-//      front_right.write(front_right_pos);
-//      front_left.write(front_left_pos);
-//      rear_right.write(rear_right_pos);
-//      rear_left.write(rear_left_pos);
-//      delay(1000);
-//      setCalibration();
-//      delay(100);
-//      getCalibration();
-//    }
+    // Calculate PID terms for roll stabilization
+    float error_roll = 0.0 - roll_angle;  // Desired angle is 0 degrees
+    integral_roll = integral_roll + error_roll * DT;
+    float derivative_roll = (error_roll - prev_error_roll) / DT;
 
-    if(ea.z < -0.5 & ea.y < -1) { // forward right lean
-      if(front_right_pos <= 140) {
-        front_right_pos = front_right_pos+1;
-        front_right.write(front_right_pos);
-      } else if(rear_left_pos >= 40) {
-        rear_left_pos=rear_left_pos-1;
-        rear_left.write(rear_left_pos);
-      }
-    } else if(ea.z > 0.5 & ea.y < -1) { // rear right lean
-      if(rear_right_pos <= 140){
-        rear_right_pos = rear_right_pos+1;
-        rear_right.write(rear_right_pos);
-      } else if(front_left_pos >= 40) {
-        front_left_pos=front_left_pos-1;
-        front_left.write(front_left_pos);
-      }
-    } else if(ea.z < -0.5 & ea.y > 1) { // forward left lean
-      if(front_left_pos <= 140) {
-        front_left_pos=front_left_pos+1;
-        front_left.write(front_left_pos);
-      } else if(rear_right_pos >= 40) { 
-       rear_right_pos=rear_right_pos-1;
-       rear_right.write(rear_right_pos);
-     }
-    } else if(ea.z > 0.5 & ea.y > 1) { // rear left lean
-      if(rear_left_pos <= 140) {
-        rear_left_pos=rear_left_pos+1;
-        rear_left.write(rear_left_pos);
-      } else if(front_right_pos >= 140) {
-        front_right_pos = front_right_pos-1;
-        front_right.write(front_right_pos);
-      }
-    } else {
-      defaultPositions();  
-    }
+    // Calculate control output for roll
+    float control_output_roll = KP_roll * error_roll + KI_roll * integral_roll + KD_roll * derivative_roll;
 
-  //   if(ea.z < -0.5){ // car is leaning forward
-  //     if(front_right_pos <= 140) {
-  //       front_right_pos = front_right_pos+1;
-  //       front_right.write(front_right_pos);
-  //     } else if(rear_right_pos >= 40){
-  //       rear_right_pos = rear_right_pos-1;
-  //       rear_right.write(rear_right_pos);
-  //     }
-  //     if(front_left_pos >= 40) {
-  //       front_left_pos=front_left_pos-1;
-  //       front_left.write(front_left_pos);
-  //     } else if(rear_left_pos <= 140) {
-  //       rear_left_pos=rear_left_pos+1;
-  //       rear_left.write(rear_left_pos);
-  //     }
-  //   } else if(ea.z > 0.5){ // car is leaning backward
-  //     if(front_right_pos >= 40) {
-  //       front_right_pos = front_right_pos-1;
-  //       front_right.write(front_right_pos);
-  //     } else if(rear_right_pos <= 140) {
-  //       rear_right_pos = rear_right_pos+1;
-  //       rear_right.write(rear_right_pos);
-  //     }
-  //     if(front_left_pos <= 140) {
-  //       front_left_pos=front_left_pos+1;
-  //       front_left.write(front_left_pos);
-  //     } else if(rear_left_pos >= 40) {
-  //       rear_left_pos=rear_left_pos-1;
-  //       rear_left.write(rear_left_pos);
-  //     }
-  //   }
+    // Calculate PID terms for pitch stabilization
+    float error_pitch = 0.0 - pitch_angle;  // Desired angle is 0 degrees
+    integral_pitch = integral_pitch + error_pitch * DT;
+    float derivative_pitch = (error_pitch - prev_error_pitch) / DT;
 
-  //  if(ea.y < -1){ // car is leaning right
-  //    if(front_right_pos <= 140) { // We raise the suspension as much as possible
-  //      front_right_pos = front_right_pos+1;
-  //      front_right.write(front_right_pos);
-  //    } else if(front_left_pos <= 140){ // If it is still not horizontal -> we lower the other shock
-  //      front_left_pos = front_left_pos+1;
-  //      front_left.write(front_left_pos);
-  //    }
-  //    if(rear_right_pos <= 140) { // We raise the suspension (equally), although, this may poise a problem e.g. it may just get into a loop of vibration when ea.y asks the servo to be raised and the ea.z to lower it. Potential solution could be that we track both y and z coordinates and adjust individual shocks. 
-  //      rear_right_pos=rear_right_pos+1;
-  //      rear_right.write(rear_right_pos);
-  //    } else if(rear_left_pos <= 140) {
-  //      rear_left_pos=rear_left_pos+1;
-  //      rear_left.write(rear_left_pos);
-  //    }
-  //  } else if(ea.y > 1){ // car is leaning left
-  //    if(front_right_pos >= 40) {
-  //      front_right_pos = front_right_pos-1;
-  //      front_right.write(front_right_pos);
-  //    } else if(front_left_pos >= 40){
-  //      front_left_pos = front_left_pos-1;
-  //      front_left.write(front_left_pos);
-  //    }
-  //    if(rear_right_pos >= 40) {
-  //      rear_right_pos=rear_right_pos-1;
-  //      rear_right.write(rear_right_pos);
-  //    } else if(rear_left_pos >= 40) {
-  //      rear_left_pos=rear_left_pos-1;
-  //      rear_left.write(rear_left_pos);
-  //    }
-  //  } 
+    // Calculate control output for pitch
+    float control_output_pitch = KP_pitch * error_pitch + KI_pitch * integral_pitch + KD_pitch * derivative_pitch;
 
+    // Update servo positions based on control outputs
+    adjustServoPositions(control_output_roll, control_output_pitch);
+
+    // Save current errors for the next iteration
+    prev_error_roll = error_roll;
+    prev_error_pitch = error_pitch;
   }
+}
+void adjustServoPositions(float control_output_roll, float control_output_pitch) {
+  // Modify servo positions based on the control outputs for roll and pitch
+  // Adjust the following conditions based on your servo orientation and desired behavior
+  front_right_pos = 90 - control_output_roll - control_output_pitch;
+  front_left_pos = 90 + control_output_roll - control_output_pitch;
+  rear_right_pos = 90 - control_output_roll + control_output_pitch;
+  rear_left_pos = 90 + control_output_roll + control_output_pitch;
+
+  // Clip servo positions to a reasonable range
+  front_right_pos = constrain(front_right_pos, 40, 140);
+  front_left_pos = constrain(front_left_pos, 40, 140);
+  rear_right_pos = constrain(rear_right_pos, 40, 140);
+  rear_left_pos = constrain(rear_left_pos, 40, 140);
+
+  // Update servo positions
+  front_right.write(front_right_pos);
+  front_left.write(front_left_pos);
+  rear_right.write(rear_right_pos);
+  rear_left.write(rear_left_pos);
 }
