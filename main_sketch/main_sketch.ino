@@ -27,6 +27,9 @@ int front_left_pos = 90;
 int rear_right_pos = 90;
 int rear_left_pos = 90;
 
+int ch3;
+int ch4;
+
 // Modified version of Adafruit BN0555 library to convert Quaternion to world angles the way we need
 // The math is a little different here compared to Adafruit's version to work the way I needed for this project
 VectorFloat QtoEulerAngle(Quaternion qt) {
@@ -173,22 +176,25 @@ void loop() {
     // Serial.print("\t");
     // Serial.print(ea.z);
     // Serial.println("\t"); 
-    ch3 = pulseIn(11, HIGH, 25000);
-    ch4 = pulseIn(10, HIGH, 25000);
-    if(ch4 == 25000) {
-      front_right_pos = 90;
-      front_left_pos = 90;
-      rear_right_pos = 90;
-      rear_left_pos = 90;
-      front_right.write(front_right_pos);
-      front_left.write(front_left_pos);
-      rear_right.write(rear_right_pos);
-      rear_left.write(rear_left_pos);
-      delay(1000);
-      setCalibration();
-      delay(100);
-      getCalibration();
-    }
+//    ch3 = pulseIn(11, HIGH, 25000);
+//    ch4 = pulseIn(10, HIGH, 25000);
+//    Serial.println("Ch3: ");
+//    Serial.println(ch3);
+//    Serial.println(ch4);
+//    if(ch4 >= 2000) {
+//      front_right_pos = 90;
+//      front_left_pos = 90;
+//      rear_right_pos = 90;
+//      rear_left_pos = 90;
+//      front_right.write(front_right_pos);
+//      front_left.write(front_left_pos);
+//      rear_right.write(rear_right_pos);
+//      rear_left.write(rear_left_pos);
+//      delay(1000);
+//      setCalibration();
+//      delay(100);
+//      getCalibration();
+//    }
 
 
     if(ea.z < -0.5){ // car is leaning forward
@@ -223,37 +229,37 @@ void loop() {
       }
     }
 
-    if(ea.y < -1){ // car is leaning right
-      if(front_right_pos <= 140) { // We raise the suspension as much as possible
-        front_right_pos = front_right_pos+1;
-        front_right.write(front_right_pos);
-      } else if(front_left_pos <= 140){ // If it is still not horizontal -> we lower the other shock
-        front_left_pos = front_left_pos+1;
-        front_left.write(front_left_pos);
-      }
-      if(rear_right_pos <= 140) { // We raise the suspension (equally), although, this may poise a problem e.g. it may just get into a loop of vibration when ea.y asks the servo to be raised and the ea.z to lower it. Potential solution could be that we track both y and z coordinates and adjust individual shocks. 
-        rear_right_pos=rear_right_pos+1;
-        rear_right.write(rear_right_pos);
-      } else if(rear_left_pos <= 140) {
-        rear_left_pos=rear_left_pos+1;
-        rear_left.write(rear_left_pos);
-      }
-    } else if(ea.y > 1){ // car is leaning left
-      if(front_right_pos >= 40) {
-        front_right_pos = front_right_pos-1;
-        front_right.write(front_right_pos);
-      } else if(front_left_pos >= 40){
-        front_left_pos = front_left_pos-1;
-        front_left.write(front_left_pos);
-      }
-      if(rear_right_pos >= 40) {
-        rear_right_pos=rear_right_pos-1;
-        rear_right.write(rear_right_pos);
-      } else if(rear_left_pos >= 40) {
-        rear_left_pos=rear_left_pos-1;
-        rear_left.write(rear_left_pos);
-      }
-    } 
+//    if(ea.y < -1){ // car is leaning right
+//      if(front_right_pos <= 140) { // We raise the suspension as much as possible
+//        front_right_pos = front_right_pos+1;
+//        front_right.write(front_right_pos);
+//      } else if(front_left_pos <= 140){ // If it is still not horizontal -> we lower the other shock
+//        front_left_pos = front_left_pos+1;
+//        front_left.write(front_left_pos);
+//      }
+//      if(rear_right_pos <= 140) { // We raise the suspension (equally), although, this may poise a problem e.g. it may just get into a loop of vibration when ea.y asks the servo to be raised and the ea.z to lower it. Potential solution could be that we track both y and z coordinates and adjust individual shocks. 
+//        rear_right_pos=rear_right_pos+1;
+//        rear_right.write(rear_right_pos);
+//      } else if(rear_left_pos <= 140) {
+//        rear_left_pos=rear_left_pos+1;
+//        rear_left.write(rear_left_pos);
+//      }
+//    } else if(ea.y > 1){ // car is leaning left
+//      if(front_right_pos >= 40) {
+//        front_right_pos = front_right_pos-1;
+//        front_right.write(front_right_pos);
+//      } else if(front_left_pos >= 40){
+//        front_left_pos = front_left_pos-1;
+//        front_left.write(front_left_pos);
+//      }
+//      if(rear_right_pos >= 40) {
+//        rear_right_pos=rear_right_pos-1;
+//        rear_right.write(rear_right_pos);
+//      } else if(rear_left_pos >= 40) {
+//        rear_left_pos=rear_left_pos-1;
+//        rear_left.write(rear_left_pos);
+//      }
+//    } 
 
   }
 }
