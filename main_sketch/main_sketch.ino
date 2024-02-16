@@ -34,13 +34,13 @@ float roll_angle;  // Tilt angle around the Z-axis
 float pitch_angle; // Tilt angle around the Y-axis
 
 // PID Constants
-float KP_roll = 4.0;
-float KI_roll = 0.02;
-float KD_roll = 0.1;
-float KP_pitch = 4.0;
-float KI_pitch = 0.02;
-float KD_pitch = 0.1;
-float DT = 0.5 ;
+float KP_roll = 1.5;
+float KI_roll = 0.01;
+float KD_roll = 0.4;
+float KP_pitch = 1.5;
+float KI_pitch = 0.01;
+float KD_pitch = 0.4;
+float DT = 0.5;
 
 float prev_error_roll = 0;
 float integral_roll = 0;
@@ -187,35 +187,47 @@ void loop() {
 
     // Convert Quaternion to Euler angles
     VectorFloat euler_angles = QtoEulerAngle(q);
-    roll_angle = euler_angles.z;
-    pitch_angle = euler_angles.y;
+    roll_angle = euler_angles.y;
+    pitch_angle = euler_angles.z;
+    Serial.print("Roll: ");
+    Serial.println(roll_angle);
+    Serial.print("Pitch: ");
+    Serial.println(pitch_angle);
 
-    // Calculate PID terms for roll stabilization
-    float error_roll = 0.0 - roll_angle;  // Desired angle is 0 degrees
-    integral_roll = integral_roll + error_roll * DT;
-    float derivative_roll = (error_roll - prev_error_roll) / DT;
+    float control_output_roll = 0;
+    if(roll_angle < 1 && roll_angle > -1) { // Adding a range for algorithm's stability
+      return;
+    } else {
+      // Calculate PID terms for roll stabilization
+      float error_roll = 0.0 - roll_angle;  // Desired angle is 0 degrees
+      integral_roll = integral_roll + error_roll * DT;
+      float derivative_roll = (error_roll - prev_error_roll) / DT;
+  
+      // Calculate control output for roll
+      control_output_roll = KP_roll * error_roll + KI_roll * integral_roll + KD_roll * derivative_roll;
+      prev_error_roll = error_roll; // Save current errors for the next iteration
+    }
 
-    // Calculate control output for roll
-    float control_output_roll = KP_roll * error_roll + KI_roll * integral_roll + KD_roll * derivative_roll;
-
-    // Calculate PID terms for pitch stabilization
-    float error_pitch = 0.0 - pitch_angle;  // Desired angle is 0 degrees
-    integral_pitch = integral_pitch + error_pitch * DT;
-    float derivative_pitch = (error_pitch - prev_error_pitch) / DT;
-
-    // Calculate control output for pitch
-    float control_output_pitch = KP_pitch * error_pitch + KI_pitch * integral_pitch + KD_pitch * derivative_pitch;
+    float control_output_pitch = 0;
+    if(pitch_angle < 1 && pitch_angle > -1) {
+      return;
+    } else {
+      // Calculate PID terms for pitch stabilization
+      float error_pitch = 0.0 - pitch_angle;  // Desired angle is 0 degrees
+      integral_pitch = integral_pitch + error_pitch * DT;
+      float derivative_pitch = (error_pitch - prev_error_pitch) / DT;
+  
+      // Calculate control output for pitch
+      control_output_pitch = KP_pitch * error_pitch + KI_pitch * integral_pitch + KD_pitch * derivative_pitch;
+      prev_error_pitch = error_pitch; // Save current errors for the next iteration
+    }
 
     // Update servo positions based on control outputs
     adjustServoPositions(control_output_roll, control_output_pitch);
-
-    // Save current errors for the next iteration
-    prev_error_roll = error_roll;
-    prev_error_pitch = error_pitch;
   }
 }
 void adjustServoPositions(float control_output_roll, float control_output_pitch) {
-  float deadband_size = 10.0;
+  float deadband_size = 0.0;
 
   if(abs(control_output_roll) < deadband_size && abs(control_output_pitch) < deadband_size) {
     return;
