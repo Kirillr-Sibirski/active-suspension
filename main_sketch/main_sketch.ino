@@ -36,10 +36,10 @@ float pitch_angle; // Tilt angle around the Y-axis
 // PID Constants
 float KP_roll = 1.5;
 float KI_roll = 0.01;
-float KD_roll = 0.4;
+float KD_roll = 0; // 0.4, 0 because the data from the sensor is noisy
 float KP_pitch = 1.5;
 float KI_pitch = 0.01;
-float KD_pitch = 0.4;
+float KD_pitch = 0; // 0.4
 float DT = 0.5;
 
 float prev_error_roll = 0;
@@ -205,6 +205,7 @@ void loop() {
   
       // Calculate control output for roll
       control_output_roll = KP_roll * error_roll + KI_roll * integral_roll + KD_roll * derivative_roll;
+      Serial.println(control_output_roll);
       prev_error_roll = error_roll; // Save current errors for the next iteration
     }
 
@@ -219,6 +220,7 @@ void loop() {
   
       // Calculate control output for pitch
       control_output_pitch = KP_pitch * error_pitch + KI_pitch * integral_pitch + KD_pitch * derivative_pitch;
+      Serial.println(control_output_pitch);
       prev_error_pitch = error_pitch; // Save current errors for the next iteration
     }
 
@@ -227,7 +229,7 @@ void loop() {
   }
 }
 void adjustServoPositions(float control_output_roll, float control_output_pitch) {
-  float deadband_size = 0.0;
+  float deadband_size = 1.0;
 
   if(abs(control_output_roll) < deadband_size && abs(control_output_pitch) < deadband_size) {
     return;
