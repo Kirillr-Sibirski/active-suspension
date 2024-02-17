@@ -194,33 +194,28 @@ void loop() {
 //    Serial.print("Pitch: ");
 //    Serial.println(pitch_angle);
 
-    float control_output_roll = 0;
-    if(roll_angle < 1 && roll_angle > -1) { // Adding a range for algorithm's stability
-      return;
-    } else {
-      // Calculate PID terms for roll stabilization
-      float error_roll = 0.0 - roll_angle;  // Desired angle is 0 degrees
-      integral_roll = integral_roll + error_roll * DT;
-      float derivative_roll = (error_roll - prev_error_roll) / DT;
-  
-      // Calculate control output for roll
-      control_output_roll = KP_roll * error_roll + KI_roll * integral_roll + KD_roll * derivative_roll;
-      prev_error_roll = error_roll; // Save current errors for the next iteration
+    // Calculate PID terms for roll stabilization
+    float error_roll = 0.0 - roll_angle;  // Desired angle is 0 degrees
+    integral_roll = integral_roll + error_roll * DT;
+    float derivative_roll = (error_roll - prev_error_roll) / DT;
+    prev_error_roll = error_roll; // Save current errors for the next iteration
+
+    // Calculate PID terms for pitch stabilization
+    float error_pitch = 0.0 - pitch_angle;  // Desired angle is 0 degrees
+    integral_pitch = integral_pitch + error_pitch * DT;
+    float derivative_pitch = (error_pitch - prev_error_pitch) / DT;
+    prev_error_pitch = error_pitch; // Save current errors for the next iteration
+
+    if (abs(roll_angle) < 1.0 && abs(pitch_angle) < 1.0) {
+      // Reset integral terms when the system is close to the horizontal position
+      integral_roll = 0;
+      integral_pitch = 0;
     }
 
-    float control_output_pitch = 0;
-    if(pitch_angle < 1 && pitch_angle > -1) {
-      return;
-    } else {
-      // Calculate PID terms for pitch stabilization
-      float error_pitch = 0.0 - pitch_angle;  // Desired angle is 0 degrees
-      integral_pitch = integral_pitch + error_pitch * DT;
-      float derivative_pitch = (error_pitch - prev_error_pitch) / DT;
-  
-      // Calculate control output for pitch
-      control_output_pitch = KP_pitch * error_pitch + KI_pitch * integral_pitch + KD_pitch * derivative_pitch;
-      prev_error_pitch = error_pitch; // Save current errors for the next iteration
-    }
+    // Calculate control output for roll
+    float control_output_roll = KP_roll * error_roll + KI_roll * integral_roll + KD_roll * derivative_roll;
+    // Calculate control output for pitch
+    float control_output_pitch = KP_pitch * error_pitch + KI_pitch * integral_pitch + KD_pitch * derivative_pitch;
 
     // Update servo positions based on control outputs
     adjustServoPositions(control_output_roll, control_output_pitch);
