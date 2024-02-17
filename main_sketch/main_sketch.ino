@@ -187,12 +187,12 @@ void loop() {
 
     // Convert Quaternion to Euler angles
     VectorFloat euler_angles = QtoEulerAngle(q);
-    roll_angle = euler_angles.y;
-    pitch_angle = euler_angles.z;
-    Serial.print("Roll: ");
-    Serial.println(roll_angle);
-    Serial.print("Pitch: ");
-    Serial.println(pitch_angle);
+    roll_angle = euler_angles.z;
+    pitch_angle = euler_angles.y;
+//    Serial.print("Roll: ");
+//    Serial.println(roll_angle);
+//    Serial.print("Pitch: ");
+//    Serial.println(pitch_angle);
 
     float control_output_roll = 0;
     if(roll_angle < 1 && roll_angle > -1) { // Adding a range for algorithm's stability
@@ -205,7 +205,6 @@ void loop() {
   
       // Calculate control output for roll
       control_output_roll = KP_roll * error_roll + KI_roll * integral_roll + KD_roll * derivative_roll;
-      Serial.println(control_output_roll);
       prev_error_roll = error_roll; // Save current errors for the next iteration
     }
 
@@ -220,7 +219,6 @@ void loop() {
   
       // Calculate control output for pitch
       control_output_pitch = KP_pitch * error_pitch + KI_pitch * integral_pitch + KD_pitch * derivative_pitch;
-      Serial.println(control_output_pitch);
       prev_error_pitch = error_pitch; // Save current errors for the next iteration
     }
 
@@ -229,19 +227,24 @@ void loop() {
   }
 }
 void adjustServoPositions(float control_output_roll, float control_output_pitch) {
-  float deadband_size = 1.0;
-
-  if(abs(control_output_roll) < deadband_size && abs(control_output_pitch) < deadband_size) {
-    return;
-  }
+//  float deadband_size = 1.0;
+//
+//  if(abs(control_output_roll) < deadband_size && abs(control_output_pitch) < deadband_size) {
+//    return;
+//  }
   
   // Modify servo positions based on the control outputs for roll and pitch
   // Adjust the following conditions based on your servo orientation and desired behavior
+  Serial.println(control_output_roll);
+  Serial.println(control_output_pitch);
+  delay(10); // So the system doesn't go to insane
   front_right_pos = 90 + control_output_roll + control_output_pitch;
   front_left_pos = 90 - control_output_roll + control_output_pitch;
   rear_right_pos = 90 - control_output_roll + control_output_pitch;
   rear_left_pos = 90 + control_output_roll + control_output_pitch;
-
+//  Serial.println("Front right position: ");
+//  Serial.println(front_right_pos);
+  
   // Clip servo positions to a reasonable range
   front_right_pos = constrain(front_right_pos, 40, 140);
   front_left_pos = constrain(front_left_pos, 40, 140);
