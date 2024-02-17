@@ -34,10 +34,10 @@ float roll_angle;  // Tilt angle around the Z-axis
 float pitch_angle; // Tilt angle around the Y-axis
 
 // PID Constants
-float KP_roll = 1.5;
+float KP_roll = 2.0; // 1.5
 float KI_roll = 0.01;
 float KD_roll = 0; // 0.4, 0 because the data from the sensor is noisy
-float KP_pitch = 1.5;
+float KP_pitch = 2.0;
 float KI_pitch = 0.01;
 float KD_pitch = 0; // 0.4
 float DT = 0.5;
@@ -58,7 +58,7 @@ VectorFloat QtoEulerAngle(Quaternion qt) {
 
   ret.x = atan2(2.0 * (qt.x * qt.y + qt.z * qt.w), (sqx - sqy - sqz + sqw));
   ret.y = asin(2.0 * (qt.x * qt.z - qt.y * qt.w) / (sqx + sqy + sqz + sqw));  //Adafruit uses -2.0 *..
-  ret.z = atan2( 2.0 * (qt.y * qt.z + qt.x * qt.w), (-sqx - sqy + sqz + sqw));
+  ret.z = atan2(2.0 * (qt.y * qt.z + qt.x * qt.w), (-sqx - sqy + sqz + sqw));
 
   // Added to convert Radian to Degrees
   ret.x = ret.x * 180 / PI;
