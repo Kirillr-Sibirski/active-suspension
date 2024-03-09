@@ -27,8 +27,8 @@ int front_left_pos;
 int rear_right_pos;
 int rear_left_pos;
 
-int ch3;
-int ch4;
+int receiver = 11; // Receiver channel connected
+boolean receiverStateWasUp = false;
 
 float roll_angle;  // Tilt angle around the Z-axis
 float pitch_angle; // Tilt angle around the Y-axis
@@ -144,6 +144,8 @@ void setup() {
   devStatus = mpu.dmpInitialize();
   Serial.print("Init MPU");
 
+  pinMode(receiver, INPUT_PULLUP);
+
   // Get stored EEPROM Calibration values and send to MPU
   // Otherwise default to predefined and display Calibration needed!
 
@@ -156,8 +158,8 @@ void setup() {
 
   delay(1000); // make sure that servos are centered
 
-  setCalibration();
-  delay(100);
+  // setCalibration();
+  // delay(100);
   getCalibration();
 
   // make sure it worked - Because we are pushing firmware on startup of DMP
@@ -183,16 +185,24 @@ void loop() {
   if (!dmpReady) return;
 
   if (mpu.dmpGetCurrentFIFOPacket(fifoBuffer)) {
+    boolean receiverStateUp = digitalRead(receiver);
+    if (receiverStateUp && !receiverStateWasUp) { // Check if transmitter button is clicked
+      delay(100); // You have to hold button on the receiver for some time before it is read as clicked
+      receiverStateUp = digitalRead(receiver);
+      if(!receiverStateUp) {
+        defaultPositions();
+        delay(1000); // make sure that servos are centered
+        setCalibration();
+        delay(100);
+      }
+    }
+    receiverStateWasUp = receiverStateUp;
     mpu.dmpGetQuaternion(&q, fifoBuffer);
 
     // Convert Quaternion to Euler angles
     VectorFloat euler_angles = QtoEulerAngle(q);
     roll_angle = euler_angles.z;
     pitch_angle = euler_angles.y;
-//    Serial.print("Roll: ");
-//    Serial.println(roll_angle);
-//    Serial.print("Pitch: ");
-//    Serial.println(pitch_angle);
 
     // Calculate PID terms for roll stabilization
     float error_roll = 0.0 - roll_angle;  // Desired angle is 0 degrees
@@ -219,6 +229,7 @@ void loop() {
 
     // Update servo positions based on control outputs
     adjustServoPositions(control_output_roll, control_output_pitch);
+
   }
 }
 void adjustServoPositions(float control_output_roll, float control_output_pitch) {
