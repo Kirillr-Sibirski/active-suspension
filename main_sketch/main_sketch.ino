@@ -176,9 +176,6 @@ void setup() {
   } else {
     Serial.print("IMU fail");
   }
-
-  pinMode(10, INPUT); // Set our input pins as such
-  pinMode(11, INPUT); // Set our input pins as such
 }
 
 void loop() {
