@@ -144,7 +144,8 @@ void setup() {
   devStatus = mpu.dmpInitialize();
   Serial.print("Init MPU");
 
-  pinMode(receiver, INPUT_PULLUP);
+  pinMode(receiver, INPUT);
+  pinMode(13, OUTPUT);
 
   // Get stored EEPROM Calibration values and send to MPU
   // Otherwise default to predefined and display Calibration needed!
@@ -182,18 +183,18 @@ void loop() {
   if (!dmpReady) return;
 
   if (mpu.dmpGetCurrentFIFOPacket(fifoBuffer)) {
-    boolean receiverStateUp = digitalRead(receiver);
-    if (receiverStateUp && !receiverStateWasUp) { // Check if transmitter button is clicked
+    int ch1 = pulseIn(receiver, HIGH, 200000);
+    Serial.println(ch1);
+    if (ch1 >= 1900) { // Check if transmitter button is clicked
       delay(100); // You have to hold button on the receiver for some time before it is read as clicked
-      receiverStateUp = digitalRead(receiver);
-      if(!receiverStateUp) {
+      if(ch1 >= 1900) {
+        Serial.println("Calibration in process...");
         defaultPositions();
         delay(1000); // make sure that servos are centered
         setCalibration();
         delay(100);
       }
     }
-    receiverStateWasUp = receiverStateUp;
     mpu.dmpGetQuaternion(&q, fifoBuffer);
 
     // Convert Quaternion to Euler angles
@@ -238,8 +239,6 @@ void adjustServoPositions(float control_output_roll, float control_output_pitch)
   
   // Modify servo positions based on the control outputs for roll and pitch
   // Adjust the following conditions based on your servo orientation and desired behavior
-  Serial.println(control_output_roll);
-  Serial.println(control_output_pitch);
   delay(10); // So the system doesn't go to insane
   front_right_pos = 90 + control_output_roll + control_output_pitch;
   front_left_pos = 90 - control_output_roll + control_output_pitch;
