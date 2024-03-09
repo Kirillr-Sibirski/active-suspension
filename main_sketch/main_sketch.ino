@@ -179,20 +179,23 @@ void setup() {
   }
 }
 
+
 void loop() {
   if (!dmpReady) return;
 
   if (mpu.dmpGetCurrentFIFOPacket(fifoBuffer)) {
     int ch1 = pulseIn(receiver, HIGH, 200000);
-    Serial.println(ch1);
     if (ch1 >= 1900) { // Check if transmitter button is clicked
       delay(100); // You have to hold button on the receiver for some time before it is read as clicked
       if(ch1 >= 1900) {
+        digitalWrite(13, HIGH);
+        // Blick LED to indicate calibration
         Serial.println("Calibration in process...");
         defaultPositions();
         delay(1000); // make sure that servos are centered
         setCalibration();
         delay(100);
+        digitalWrite(13, LOW);
       }
     }
     mpu.dmpGetQuaternion(&q, fifoBuffer);
