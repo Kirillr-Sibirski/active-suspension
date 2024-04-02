@@ -7,14 +7,19 @@
 
 [Process](#process)
 
-[1: Literature Review](#literature-review)
-[2: Theoretical Suspension Design](#theoretical-suspension-design)
-[3: Initial Tests](#initial-tests)
-[4: Mechanical System Prototyping & Development](#mechanical-system-prototyping-development)
-[5: Electronics Design](#electronics-design)
-[6: Software](#software)
+  [1: Literature Review](#literature-review)
 
-[7: Performance Assessment](#performance-assessment)
+  [2: Theoretical Suspension Design](#theoretical-suspension-design)
+
+  [3: Initial Tests](#initial-tests)
+
+  [4: Mechanical System Prototyping & Development](#mechanical-system-prototyping-development)
+
+  [5: Electronics Design](#electronics-design)
+
+  [6: Software](#software)
+
+  [7: Performance Assessment](#performance-assessment)
 
 [Evaluation](#_Toc161216122)
 
