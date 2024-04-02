@@ -2,8 +2,7 @@
 
 [Abstract [1](#abstract)](#abstract)
 
-[Introduction
-[1](#this-essay-details-the-development-of-an-active-suspension-system-aimed-at-improving-the-safety-of-off-road-vehicles-by-addressing-the-challenge-of-rollovers-on-uneven-terrain.-through-an-in-depth-literature-review-and-analysis-of-vehicle-dynamics-the-project-identifies-an-approach-to-enhance-current-rollover-prevention-techniques.-utilizing-a-110th-scale-model-car-for-practical-and-cost-effective-experimentation-this-study-explores-the-integration-of-mechanical-electronic-and-software-engineering-to-adjust-the-vehicles-centre-of-mass-dynamically-ensuring-constant-wheel-ground-contact-for-better-traction.-while-the-system-demonstrated-potential-in-mitigating-specific-rollover-scenarios-its-effectiveness-across-all-conditions-highlighted-areas-for-further-development.-this-endeavour-emphasizes-the-value-of-a-multidisciplinary-approach-to-engineering-challenges-contributing-to-the-discussion-on-enhancing-off-road-vehicle-safety.-the-experience-gained-from-this-project-offers-insights-into-the-complexities-of-designing-safety-mechanisms-for-dynamic-environments.)](#this-essay-details-the-development-of-an-active-suspension-system-aimed-at-improving-the-safety-of-off-road-vehicles-by-addressing-the-challenge-of-rollovers-on-uneven-terrain.-through-an-in-depth-literature-review-and-analysis-of-vehicle-dynamics-the-project-identifies-an-approach-to-enhance-current-rollover-prevention-techniques.-utilizing-a-110th-scale-model-car-for-practical-and-cost-effective-experimentation-this-study-explores-the-integration-of-mechanical-electronic-and-software-engineering-to-adjust-the-vehicles-centre-of-mass-dynamically-ensuring-constant-wheel-ground-contact-for-better-traction.-while-the-system-demonstrated-potential-in-mitigating-specific-rollover-scenarios-its-effectiveness-across-all-conditions-highlighted-areas-for-further-development.-this-endeavour-emphasizes-the-value-of-a-multidisciplinary-approach-to-engineering-challenges-contributing-to-the-discussion-on-enhancing-off-road-vehicle-safety.-the-experience-gained-from-this-project-offers-insights-into-the-complexities-of-designing-safety-mechanisms-for-dynamic-environments.)
+[Introduction [1](#introduction)](#introduction)
 
 [Process [2](#process)](#process)
 
@@ -30,11 +29,11 @@
 
 [Appendices [22](#appendices)](#appendices)
 
-# Abstract
+## Abstract
 
-# This essay details the development of an active suspension system aimed at improving the safety of off-road vehicles by addressing the challenge of rollovers on uneven terrain. Through an in-depth literature review and analysis of vehicle dynamics, the project identifies an approach to enhance current rollover prevention techniques. Utilizing a 1/10th scale model car for practical and cost-effective experimentation, this study explores the integration of mechanical, electronic, and software engineering to adjust the vehicle's centre of mass dynamically, ensuring constant wheel-ground contact for better traction. While the system demonstrated potential in mitigating specific rollover scenarios, its effectiveness across all conditions highlighted areas for further development. This endeavour emphasizes the value of a multidisciplinary approach to engineering challenges, contributing to the discussion on enhancing off-road vehicle safety. The experience gained from this project offers insights into the complexities of designing safety mechanisms for dynamic environments.
+This essay details the development of an active suspension system aimed at improving the safety of off-road vehicles by addressing the challenge of rollovers on uneven terrain. Through an in-depth literature review and analysis of vehicle dynamics, the project identifies an approach to enhance current rollover prevention techniques. Utilizing a 1/10th scale model car for practical and cost-effective experimentation, this study explores the integration of mechanical, electronic, and software engineering to adjust the vehicle's centre of mass dynamically, ensuring constant wheel-ground contact for better traction. While the system demonstrated potential in mitigating specific rollover scenarios, its effectiveness across all conditions highlighted areas for further development. This endeavour emphasizes the value of a multidisciplinary approach to engineering challenges, contributing to the discussion on enhancing off-road vehicle safety. The experience gained from this project offers insights into the complexities of designing safety mechanisms for dynamic environments.
 
-# Introduction
+## Introduction
 
 The current state of off-road vehicles has gradually improved over the
 past decades, however, it still encounters lots of challenges,
@@ -63,9 +62,9 @@ scale models. Moreover, off-road vehicles, SUVs in particular, are more
 prone to rollovers due to the raised suspensions which raises the centre
 of mass.
 
-# Process
+## Process
 
-## 1: Literature Review
+### 1: Literature Review
 
 According to (Wikipedia Foundation, 2022), current methods used by
 National Highway Traffic Safety Administration (NHTSA) to test vehicle
@@ -129,7 +128,7 @@ project; however, his aim was to enhance vehicle’s steering control and
 overall driving experience rather than specifically preventing
 rollovers.
 
-## 2: Theoretical Suspension Design
+### 2: Theoretical Suspension Design
 
 The sprung mass refers to the parts that the suspension holds up, like
 the body and chassis in the middle of the car. On the other hand, the
@@ -157,7 +156,7 @@ actuator and effectively absorbs abrupt terrain changes.
 <img src="media/image1.png" style="width:3.37505in;height:4.17532in"
 alt="A diagram of a mass motor Description automatically generated" />
 
-## 3: Initial Tests
+### 3: Initial Tests
 
 The hypothesis suggests that adjusting the height difference of the
 shocks on difference sides (right/left or front/rear) to move the centre
@@ -202,7 +201,7 @@ As a result, my hypothesis has been proven right because with an
 increase in height difference, the angle of rollover occurrence also
 increases proportionally at ≈ 3.4°/cm.
 
-## 4: Mechanical System Prototyping & Development
+### 4: Mechanical System Prototyping & Development
 
 My idea involved devising an alternative system similar to Bose's
 innovation but using cost-effective, readily available components. The
@@ -299,7 +298,7 @@ also able to attach new body shell holders to each servo frame.
 <img src="media/image10.png" style="width:6.26806in;height:4.70139in"
 alt="A black machine with wires and wires Description automatically generated" />
 
-## 5: Electronics Design
+### 5: Electronics Design
 
 For testing the newly assembled mechanical system, I have integrated
 electronics to control all four servos simultaneously with basic
@@ -351,7 +350,7 @@ alt="A blue circuit board with wires Description automatically generated" />
 <img src="media/image14.png" style="width:3.90114in;height:5.20152in"
 alt="Active Suspension Electronics Enclosure" />
 
-## 6: Software 
+### 6: Software 
 
 The programming language used to program the Arduino microcontroller is
 C/C++. There are two main functions inside the program, ‘void setup’,
@@ -404,7 +403,7 @@ Finding the constraints of servo
 motors:<img src="media/image17.jpeg" style="width:5.88298in;height:4.28946in"
 alt="A person working on a machine Description automatically generated" />
 
-## 7: Performance Assessment
+### 7: Performance Assessment
 
 To properly evaluate the effectiveness of the active suspension system
 in rollover prevention a series of experiments and tests need to be
@@ -468,7 +467,7 @@ to counteract those before the vehicle starts tilting before it becomes
 something valuable to have in a real-world use
 case.<span id="_Toc161216122" class="anchor"></span>
 
-# Evaluation
+## Evaluation
 
 This project aimed at developing an active suspension system tailored
 for off-road vehicles to mitigate the risk of rollovers, particularly on
@@ -506,7 +505,7 @@ More than just advancing vehicle safety, this project has been
 instrumental in my growth as an engineer, preparing me for future
 challenges in the field.
 
-# Bibliography
+## Bibliography
 
 Wikipedia Foundation, 2022. *Tilt test (vehicle safety test).*
 \[Online\]  
@@ -595,7 +594,7 @@ Cockfield, B., 2021. *Hackaday.* \[Online\]
 Available at:
 <u>https://hackaday.com/2021/04/14/remote-controlled-car-gets-active-suspension/</u>
 
-# Appendices
+## Appendices
 
 - All the source code written in C/C++ can be found in the following
   repository: <https://github.com/Kirillr-Sibirski/active-suspension>
