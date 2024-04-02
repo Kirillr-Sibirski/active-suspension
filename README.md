@@ -1,33 +1,26 @@
-# Table of Contents
+# An Active Suspension System for Off-Road Rollover Prevention
 
-[Abstract [1](#abstract)](#abstract)
+## Table of Contents
 
-[Introduction [1](#introduction)](#introduction)
+[Abstract](#abstract)
+[Introduction](#introduction)
 
-[Process [2](#process)](#process)
+[Process](#process)
 
-[1: Literature Review [2](#literature-review)](#literature-review)
+[1: Literature Review](#literature-review)
+[2: Theoretical Suspension Design](#theoretical-suspension-design)
+[3: Initial Tests](#initial-tests)
+[4: Mechanical System Prototyping & Development](#mechanical-system-prototyping-development)
+[5: Electronics Design](#electronics-design)
+[6: Software](#software)
 
-[2: Theoretical Suspension Design
-[4](#theoretical-suspension-design)](#theoretical-suspension-design)
+[7: Performance Assessment](#performance-assessment)
 
-[3: Initial Tests [5](#initial-tests)](#initial-tests)
+[Evaluation](#_Toc161216122)
 
-[4: Mechanical System Prototyping & Development
-[7](#mechanical-system-prototyping-development)](#mechanical-system-prototyping-development)
+[Bibliography](#_Toc161216123)
 
-[5: Electronics Design [13](#electronics-design)](#electronics-design)
-
-[6: Software [16](#software)](#software)
-
-[7: Performance Assessment
-[20](#performance-assessment)](#performance-assessment)
-
-[Evaluation [21](#_Toc161216122)](#_Toc161216122)
-
-[Bibliography [21](#_Toc161216123)](#_Toc161216123)
-
-[Appendices [22](#appendices)](#appendices)
+[Appendices](#appendices)
 
 ## Abstract
 
