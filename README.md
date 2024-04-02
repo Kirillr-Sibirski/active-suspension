@@ -6,7 +6,7 @@
 [Introduction](#introduction)
 
 [Process](#process)
-
+<div style="margin-left: 10px;">
   [1: Literature Review](#literature-review)
 
   [2: Theoretical Suspension Design](#theoretical-suspension-design)
@@ -20,7 +20,7 @@
   [6: Software](#software)
 
   [7: Performance Assessment](#performance-assessment)
-
+</div>
 [Evaluation](#_Toc161216122)
 
 [Bibliography](#_Toc161216123)
