@@ -6,21 +6,21 @@
 [Introduction](#introduction)
 
 [Process](#process)
-<div style="margin-left: 10px;">
-  [1: Literature Review](#literature-review)
 
-  [2: Theoretical Suspension Design](#theoretical-suspension-design)
+> [1: Literature Review](#literature-review)
 
-  [3: Initial Tests](#initial-tests)
+> [2: Theoretical Suspension Design](#theoretical-suspension-design)
 
-  [4: Mechanical System Prototyping & Development](#mechanical-system-prototyping-development)
+> [3: Initial Tests](#initial-tests)
 
-  [5: Electronics Design](#electronics-design)
+> [4: Mechanical System Prototyping & Development](#mechanical-system-prototyping-development)
 
-  [6: Software](#software)
+> [5: Electronics Design](#electronics-design)
 
-  [7: Performance Assessment](#performance-assessment)
-</div>
+> [6: Software](#software)
+
+> [7: Performance Assessment](#performance-assessment)
+
 [Evaluation](#_Toc161216122)
 
 [Bibliography](#_Toc161216123)
